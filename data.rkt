@@ -293,7 +293,7 @@
    (hash-ref data 'tts)
    (hash-ref data 'mention_everyone)
    (extract-and-parse data 'mentions hash->user)
-   (extract-and-parse data 'mention_roles hash->role)
+   (hash-ref data 'mention_roles)
    (hash-ref data 'attachments)
    (hash-ref data 'embeds)
    (hash-ref data 'reactions null)
@@ -321,10 +321,12 @@
    (hash-ref data 'managed)))
 
 (define (hash->game data)
-  (game
-   (hash-ref data 'name)
-   (hash-ref data 'type)
-   (hash-ref data 'url)))
+  (if (equal? data 'null)
+      null
+      (game
+        (hash-ref data 'name)
+        (hash-ref data 'type)
+        (hash-ref data 'url))))
 
 (define (game->hash game)
   (hash

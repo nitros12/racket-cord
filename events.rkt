@@ -146,9 +146,11 @@
               (hash-set! (guild-channels guild) id chan))])))
 
 (define (event-channel-update ws-client client data)
-  (let ([guild (get-guild client (hash-ref data 'guild_id))])
+  (let* ([guild (get-guild client (hash-ref data 'guild_id))]
+         [channel_id (hash-ref data 'id)]
+         [channel (hash-ref (guild-channels guild) channel_id)])
     (hash-set! (guild-channels guild)
-               (hash-ref data 'guild_id) (update-channel data))))
+               channel_id (update-channel channel data))))
 
 (define (event-channel-delete ws-client client data)
   (let ([id (hash-ref data 'id)]
@@ -193,8 +195,10 @@
     (hash-remove! (guild-roles guild) (hash-ref data 'role_id))))
 
 (define (event-guild-role-update ws-client client data)
-  (let ([guild (get-guild client (hash-ref data 'guild_id))])
-    (hash-set! (guild-roles guild) (hash->role (hash-ref data 'role)))))
+  (let* ([guild (get-guild client (hash-ref data 'guild_id))]
+         [role (hash->role (hash-ref data 'role))])
+    (hash-set! (guild-roles guild)
+               (hash->role (hash-ref data 'role)) role)))
 
 (define (event-user-update ws-client client data)
   (set-client-user! (update-user (client-user client) data)))
